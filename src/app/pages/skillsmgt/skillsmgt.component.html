@@ -1,0 +1,90 @@
+<div class="flex w-full h-full flex-col p-8 space-y-4 overflow-hidden">
+    <div class="flex flex-col w-full">
+        <div class="flex justify-between items-center w-full">
+            <h1 class="text-4xl font-semibold">Skills</h1>
+            <button onclick="addSkill.showModal()" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> New</button>
+        </div>
+    </div>
+    <div class="flex flex-col space-y-4 overflow-hidden">
+        <div class="flex space-x-2">
+            <label class="input input-bordered flex items-center gap-2 w-4/12">
+                <input [(ngModel)]="search" (ngModelChange)="filterSkills()" type="text" class="grow" placeholder="Search" />
+                <i *ngIf="search.length == 0" class="fa-solid fa-magnifying-glass"></i>
+                <i *ngIf="search.length != 0"  (click)="clearSearch()" class="fa-solid fa-circle-xmark cursor-pointer"></i>
+                    </label>
+            <!-- <button class="btn">Filter</button> -->
+            <span *ngIf="isLoading" class="loading loading-spinner loading-md"></span>
+        </div>
+        <div class="overflow-auto">
+            <table class="table h-full">
+                <!-- head -->
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Beschreibung</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="hover cursor-pointer" (click)="showDetails(skill)" *ngFor="let skill of filteredSkills; let i = index">
+                        <td>{{skill.name}}</td>
+                        <td>
+                            <p class="line-clamp-2">{{skill.description}}</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<dialog id="addSkill" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+        <div class="flex flex-col space-y-2">
+            <h3 class="font-bold text-lg">Add a new skill</h3>
+            <form (submit)="addSkill()" class="space-y-2 flex flex-col">
+                <input [(ngModel)]="newSkillData.name" name="createprojectname" type="text" placeholder="Skill name" class="input input-bordered w-full max-w-xs" />
+                <textarea [(ngModel)]="newSkillData.description" name="createprojectdescription" class="textarea textarea-bordered min-h-32 w-full" placeholder="Skill description"></textarea>
+                <button type="submit" class="btn"><i class="fa-solid fa-plus"></i> Add</button>
+            </form>
+        </div>
+    </div>
+</dialog>
+
+<dialog id="skillDetail" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+        <h3 class="font-bold text-lg">{{ currentSkill.name }}</h3>
+        <p *ngIf="currentSkill.description?.length! > 0" class="py-2">{{ currentSkill.description }}</p>
+        <div class="divider"></div>
+        <button (click)="deleteSkill()" class="btn btn-error w-full"><i class="fa-solid fa-trash"></i> Delete</button>
+    </div>
+</dialog>
+
+<dialog id="skillDetail" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+        <h3 class="font-bold text-lg">{{ currentSkill.name }}</h3>
+        <p *ngIf="currentSkill.description?.length! > 0" class="py-2">{{ currentSkill.description }}</p>
+        <div class="divider"></div>
+        <button (click)="deleteSkill()" class="btn btn-error w-full"><i class="fa-solid fa-trash"></i> Delete</button>
+    </div>
+</dialog>
+
+<div *ngIf="alertService.showAlert" class="fixed top-4 right-4 z-50">
+    <div role="alert"
+      [ngClass]="{'alert-error': alertService.alertLevel == 'error', 'alert-success': alertService.alertLevel == 'success', 'alert-warning': alertService.alertLevel == 'warning', 'alert-info': alertService.alertLevel == 'info'}"
+      class="alert">
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>{{ alertService.alertMessage}}</span>
+    </div>
+  </div>

@@ -1,0 +1,263 @@
+<div class="flex w-full h-full flex-col p-8 space-y-4 overflow-hidden">
+  <div class="flex flex-col">
+    <div class="flex justify-between items-center w-full">
+      <h1 class="text-4xl font-semibold">Users</h1>
+      <div class="dropdown">
+        <div tabindex="0" role="button" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i> Add</div>
+        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+          <li><a onclick="addManually.showModal()">Manually</a></li>
+          <li><a onclick="addUpload.showModal()">CSV</a></li>
+          <li><a onclick="addSync.showModal()">LDAP</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col space-y-4 overflow-hidden">
+    <div class="flex space-x-3">
+      <label class="input input-bordered flex items-center gap-2 w-4/12">
+        <input [(ngModel)]="search" (ngModelChange)="filterUsers()" type="text" class="grow" placeholder="Search" />
+        <i *ngIf="search.length == 0" class="fa-solid fa-magnifying-glass"></i>
+        <i *ngIf="search.length != 0" (click)="clearSearch()" class="fa-solid fa-circle-xmark cursor-pointer"></i>
+      </label>
+      <!-- <button class="btn">Filter</button> -->
+      <span *ngIf="isLoading" class="loading loading-spinner loading-md"></span>
+    </div>
+    <div class="overflow-auto">
+      <table class="table">
+        <!-- head -->
+        <thead>
+          <tr>
+            <th class="w-8"></th>
+            <th>Name</th>
+            <!-- <th>Skills</th> -->
+            <!-- <th>Abteilung</th> -->
+          </tr>
+        </thead>
+        <tbody>
+
+
+          <tr (click)="showDetails(user)" class="hover cursor-pointer"
+            *ngFor="let user of filteredUsers; let i = index">
+            <td class="">
+              <div class="avatar">
+                <div *ngIf="user.profile_picture" class="w-8 rounded-full">
+                  <img src="https://thispersondoesnotexist.com/" alt="Avatar">
+                </div>
+              </div>
+              <div class="avatar placeholder">
+                <div *ngIf="!user.profile_picture" class="bg-neutral text-neutral-content rounded-full w-8">
+                  <span class="text-xs">{{user.first_name[0]}}{{user.last_name[0]}}</span>
+                </div>
+              </div>
+            </td>
+            <td>{{user.first_name}} {{user.last_name}}</td>
+            <!-- <td>
+              <div class="flex flex-nowrap space-x-1">
+                <div class="badge badge-neutral">SQL</div>
+                <div class="badge badge-neutral">DDI</div>
+                <div class="badge badge-neutral">Hirschmann</div>
+              </div>
+            </td> -->
+            <!-- <td>{{ user.departement ?? "N/A" }}</td> -->
+          </tr>
+        </tbody>
+      </table>
+      <br>
+
+      <p (click)="showPending = !showPending" class="text-xs opacity-50 cursor-pointer">{{showPending ? 'hide' : 'show'}} pending</p>
+      <table *ngIf="showPending" class="table">
+        <thead>
+          <tr>
+            <td class="w-8"></td>
+            <td class="w-8">Admin</td>
+            <td>Email</td>
+            <td>Resend invitation</td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of pendingUser">
+            <td (click)="removePendingUser(user.id)" class="text-center cursor-pointer"><i class="fa-regular fa-trash-can"></i></td>
+            <td class="text-center"><input class="checkbox" disabled [checked]="user.admin" type="checkbox" name="admin" id=""></td>
+            <td>{{user.email}}</td>
+            <td class=""><button class="btn btn-outline btn-xs btn-disabled">Resend</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+
+
+</div>
+
+<dialog id="userDetail" class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    </form>
+    <div class="flex flex-col w-full space-y-2">
+      <div class="flex space-x-4 w-full items-center">
+        <div>
+          <div class="avatar">
+            <div *ngIf="currentUser.profile_picture" class="w-24 rounded-full">
+              <img src="https://thispersondoesnotexist.com/" alt="Avatar">
+            </div>
+          </div>
+          <div class="avatar placeholder">
+            <div *ngIf="!currentUser.profile_picture" class="bg-neutral text-neutral-content rounded-full w-24">
+              <span *ngIf="currentUser.first_name && currentUser.last_name" class="text-3xl font-semibold">{{
+                currentUser.first_name[0] }} {{ currentUser.last_name[0] }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col space-y-2 w-full">
+          <p class="font-bold text-lg">{{currentUser.first_name}} {{currentUser.last_name}}</p>
+          <p>{{currentUser.email}}</p>
+          <!-- <input [(ngModel)]="currentUser.first_name" type="text" placeholder="First name" class="input input-bordered w-full" />
+          <input [(ngModel)]="currentUser.last_name" type="text" placeholder="Last name" class="input input-bordered w-full" /> -->
+        </div>
+      </div>
+      <!-- <input [(ngModel)]="currentUser.email" type="text" placeholder="Email" class="input input-bordered w-full" /> -->
+
+
+      <div class="divider"></div>
+      <h3 class="font-bold text-md">Skills</h3>
+      <p *ngIf="currentUserSkills.length == 0" class="text-xs">No skills assigned</p>
+
+      <div *ngIf="currentUserSkills.length > 0" class="flex flex-wrap gap-2 itmes-center">
+
+
+        <!-- <div *ngFor="let skill of currentUserSkills; let i = index" class="group relative flex items-center py-1 px-3 bg-base-300 rounded-md">
+          <p class="font-semibold text-sm group-hover:opacity-70 group-hover:blur-sm">{{ skill.name }}</p>
+          <div class="tooltip absolute top-1/2 transform -translate-y-1/2" data-tip="Remove">
+            <i (click)="removeuserskill(skill.skill_type_id)" class="text-md fa-solid fa-circle-xmark cursor-pointer opacity-0 group-hover:opacity-100"></i>
+          </div>
+        </div> -->
+
+        <div *ngFor="let skill of currentUserSkills; let i = index" class="flex items-center py-1 px-3 bg-base-300 rounded-md space-x-1">
+          <div *ngIf="skillEdit" class="tooltip" data-tip="Remove">
+            <i (click)="removeuserskill(skill.skill_type_id)" class="text-md fa-solid fa-circle-xmark cursor-pointer"></i>
+          </div>
+          <p class="font-semibold text-sm group-hover:opacity-70 group-hover:blur-sm">{{ skill.name }}</p>
+        </div>
+
+        <!-- <button class="btn btn-xs btn-outline btn-primary"><i class="fa-solid fa-plus"></i> Add</button> -->
+
+      </div>
+
+      <br>
+      <div class="flex items-center space-x-2">
+        <div *ngIf="!skillEdit">
+          <button (click)="openassignskillmenu()" class="btn btn-xs"><i class="fa-solid fa-plus"></i> Assign
+            skills</button>
+        </div>
+        <div>
+          <button (click)="skillEdit = !skillEdit" class="btn btn-xs btn-ghost"><i
+              [ngClass]="{'fa-check': skillEdit, 'fa-pen-to-square': !skillEdit}" class="fa-solid"></i> {{!skillEdit ?
+            'Edit' : 'Finish'}}</button>
+
+        </div>
+      </div>
+
+
+      <div class="divider"></div>
+      <button (click)="deleteuser()" class="btn btn-error"><i class="fa-solid fa-trash"></i> Delete</button>
+
+    </div>
+  </div>
+</dialog>
+
+<dialog id="assignSkillMenu" class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    </form>
+    <h3 class="font-bold text-lg">Assign skill</h3>
+    <div class="flex flex-col space-y-4">
+
+      <!-- tbd sort alphabetical -->
+      <label class="input input-bordered flex items-center">
+        <input [(ngModel)]="skillSearch" (ngModelChange)="filterAssignSkills()" type="text" class="grow"
+          placeholder="Search for name or description" />
+        <i *ngIf="skillSearch.length == 0" class="fa-solid fa-magnifying-glass"></i>
+        <i *ngIf="skillSearch.length != 0" (click)="clearassignsearch()"
+          class="fa-solid fa-circle-xmark cursor-pointer"></i>
+      </label>
+      <div class="flex flex-wrap gap-2">
+        <div (click)="prepareSkillToAdd(skill)" *ngFor="let skill of filteredSkillTypes; let i = index"
+          [ngClass]="{'bg-primary': skillsToAdd.includes(skill) }"
+          class="group relative flex items-center py-1 px-3 bg-base-300 rounded-md cursor-pointer hover:bg-base-200">
+          <p class="font-semibold text-sm">{{ skill.name }}</p>
+        </div>
+      </div>
+
+
+      <div class="divider"></div>
+      <button (click)="addSkillsToUser()" [disabled]="skillsToAdd.length == 0" class="btn"><i
+          class="fa-solid fa-plus"></i> Assign {{skillsToAdd.length}} skill{{ skillsToAdd.length < 2 ? '' : 's' }} to
+          {{currentUser.first_name}}</button>
+
+    </div>
+  </div>
+</dialog>
+
+<dialog id="addManually" class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    </form>
+    <h3 class="font-bold text-lg">Add user manually</h3>
+    <div class="flex flex-col space-y-4 w-full">
+      <div class="flex flex-col">
+        <p class="">Email</p>
+        <input [(ngModel)]="preRegisterUserData.email" type="text" placeholder="john.doe@mail.com"
+          class="input input-bordered w-full" />
+
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <input [checked]="preRegisterUserData.admin" (change)="preRegisterUserData.admin = !preRegisterUserData.admin"
+          type="checkbox" id="manuallyadmin" class="checkbox" />
+        <label class="cursor-pointer" for="manuallyadmin">User is an admin</label>
+      </div>
+
+      <div class="divider"></div>
+      <button (click)="pregegister()" class="btn"><i class="fa-solid fa-plus"></i> Register</button>
+
+    </div>
+  </div>
+</dialog>
+
+<dialog id="addUpload" class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    </form>
+    <h3 class="font-bold text-lg">Add user from a CSV</h3>
+    <div class="badge badge-outline">COMING SOON</div>
+  </div>
+</dialog>
+
+<dialog id="addSync" class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    </form>
+    <h3 class="font-bold text-lg">Add user from LDAP</h3>
+    <div class="badge badge-outline">COMING SOON</div>
+  </div>
+</dialog>
+
+<div *ngIf="alertService.showAlert" class="fixed top-4 right-4 z-50">
+  <div role="alert"
+    [ngClass]="{'alert-error': alertService.alertLevel == 'error', 'alert-success': alertService.alertLevel == 'success', 'alert-warning': alertService.alertLevel == 'warning', 'alert-info': alertService.alertLevel == 'info'}"
+    class="alert">
+    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span>{{ alertService.alertMessage}}</span>
+  </div>
+</div>

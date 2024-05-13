@@ -1,0 +1,28 @@
+<div class="flex w-full min-h-full flex-col p-8 space-y-8">
+  <div class="flex flex-col">
+    <h1 class="text-4xl font-semibold">Contact</h1>
+  </div>
+
+  <div class="flex flex-col space-y-4">
+    <select class="select select-bordered w-52">
+      <option disabled selected>Reason to contact us?</option>
+      <option>Feature request</option>
+      <option>Issue/Bug</option>
+      <option>Other</option>
+    </select>
+    <input [(ngModel)]="subject" type="text" placeholder="Subject" class="input input-bordered max-w-96" />
+    <textarea [(ngModel)]="message" class="textarea textarea-bordered max-w-96 min-h-52" placeholder="Message"></textarea>
+    <button (click)="sendMessage()" class="btn btn-primary w-24"><i class="fa-regular fa-paper-plane"></i> Send</button>
+  </div>
+</div>
+
+<div *ngIf="alertService.showAlert" class="fixed top-4 right-4">
+  <div role="alert"
+      [ngClass]="{'alert-error': alertService.alertLevel == 'error', 'alert-success': alertService.alertLevel == 'success', 'alert-warning': alertService.alertLevel == 'warning', 'alert-info': alertService.alertLevel == 'info'}"
+      class="alert">
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>{{ alertService.alertMessage}}</span>
+  </div>
+</div>

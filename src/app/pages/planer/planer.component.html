@@ -1,0 +1,192 @@
+<div class="flex w-full h-full flex-col p-4 lg:p-8 space-y-4 overflow-hidden">
+    <div class="flex flex-col">
+        <div class="flex justify-between items-center w-full">
+            <h1 class="text-4xl font-semibold">Planer</h1>
+            <div class="flex items-center justify between space-x-2">
+                <button onclick="settingsModal.showModal()" class="btn btn-xs"><i class="fa-solid fa-gear"></i>
+                    Settings</button>
+                <button (click)="save()" class="btn btn-xs btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="flex flex-col space-y-2">
+        <!-- <div class="flex w-full bg-base-200 rounded-xl p-4"> -->
+
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="flex flex-col">
+                    <p class="font-bold text-lg">{{titleString[0]}}</p>
+                    <p class="font-semilight text-xs">{{titleString[1]}}</p>
+                </div>
+                <span *ngIf="isLoading" class="loading loading-spinner loading-md"></span>
+            </div>
+            <div class="flex-items-center space-x-4">
+                <div class="tooltip" data-tip="Previous">
+                    <i (click)="changeTimeFrame('previous')" class="fa-solid fa-chevron-left cursor-pointer"></i>
+                </div>
+                <div *ngIf="!isToday(selectedDate)" class="tooltip" data-tip="Jump to today">
+                    <i (click)="jumpToToday()" class="fa-regular fa-calendar cursor-pointer"></i>
+                </div>
+                <div class="tooltip" data-tip="Next">
+                    <i (click)="changeTimeFrame('next')" class="fa-solid fa-chevron-right cursor-pointer"></i>
+                </div>
+
+
+                <div class="join">
+                    <button *ngFor="let span of timeSpan; let i = index" (click)="changeTimeSpan(i)"
+                        [ngClass]="{'btn-neutral': span.active}"
+                        class="btn btn-xs join-item">{{span.abbreviation.toUpperCase()}}</button>
+
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+
+        <div class="overflow-auto no-scrollbar">
+            <table class="table table-pin-cols border-0 table-xs">
+                <thead>
+                    <tr>
+                        <!-- user header down -->
+                        <th class=""></th>
+                        <!-- user header up -->
+
+
+                        <td *ngFor="let col of columns" class="text-center">{{col.title}}</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of users; let i = index" class="border-0">
+                        <!-- users down -->
+                        <th class="flex space-x-2 items-center">
+                            <div class="avatar" *ngIf="user.profile_picture">
+                                <div class="w-8 rounded-full">
+                                    <img src="https://thispersondoesnotexist.com/" alt="Avatar">
+                                </div>
+                            </div>
+                            <div class="avatar placeholder" *ngIf="!user.profile_picture">
+                                <div class="bg-neutral text-neutral-content rounded-full w-8">
+                                    <span class="text-xs">{{user.first_name[0]}}{{user.last_name[0]}}</span>
+                                </div>
+                            </div>
+                            <div class="flex">
+                                <p class="font-semibold text-nowrap">{{user.first_name}} {{user.last_name[0]}}.</p>
+                            </div>
+                        </th>
+                        <!-- users up -->
+
+                        <td *ngFor="let col of columns" [id]="col.id+user.id" [ngClass]="{'bg-zinc-200' : slotAssigned(col.id+user.id), 'cursor-pointer' : selectedProjectRessource[0] != undefined}" class="text-center h-10 p-0"
+                            (mousedown)="onMouseDown(col.id+user.id)" (mouseleave)="onMouseLeave(col.id+user.id)"
+                            (mouseover)="onMouseEnter(col.id+user.id)">
+                            <!-- tbd show which dates are selected already -->
+                            <div class="flex w-full h-full justify-center items-center p-1">
+                                <p class="min-w-12">{{col.id}}{{user.id}}</p>
+
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <div class="flex flex-col space-y-2" *ngFor="let project of projects">
+        <div class="flex items-center space-x-2">
+            <div class="tooltip tooltip-right"
+                [attr.data-tip]="project.project.lock ? 'Project locked. Wont be processed' : 'Project unlocked. Will be processed'">
+                <i (click)="swapProjectLock(!project.project.lock, project.project.id.toString())"
+                    [ngClass]="{ 'fa-lock': project.project.lock, 'fa-lock-open': !project.project.lock }"
+                    class="cursor-pointer text-xs fa-solid"></i>
+            </div>
+            <p class="text-xl font-semibold">{{project.project.name}}</p>
+        </div>
+        <div class="flex items-center gap-2 w-full">
+            <div *ngFor="let ressource of project.ressources" (click)="selectProjectRessource(ressource)" [ngClass]="{'badge-primary' : selectedProjectRessource[0] == ressource}" class="badge items-center space-x-1 cursor-pointer">
+                <p>{{ ressource.skill_name }}</p>
+                <!-- <span class="opacity-50 text-xs">{{ ressource.time / 3600 }}h</span> -->
+                <span class="opacity-50 text-xs">{{ getRemainingTime(ressource) / 3600 }}h</span>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+<dialog id="settingsModal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+        <h3 class="font-bold text-lg">Settings</h3>
+        <div class="flex flex-col w-full space-y-2">
+            <div class="flex justify-between items-center w-full">
+                <div class="flex items-center space-x-2">
+                    <p class="text-md">Wiggle room</p>
+                    <div class="tooltip" data-tip="Flexibility for adjustment (% per skill)">
+                        <i class="fa-solid fa-circle-info text-xs"></i>
+                    </div>
+                </div>
+                <label class="input input-bordered flex items-center gap-2">
+                    <input [(ngModel)]="wiggle_room" name="wiggleroom" type="number" class="w-12" placeholder="" />
+                    <p class="w-4">%</p>
+                </label>
+            </div>
+
+            <div class="flex justify-between items-center w-full">
+                <div class="flex items-center space-x-2">
+                    <p class="text-md">Business hours (daily)</p>
+                    <div class="tooltip" data-tip="Operating hours of your business">
+                        <i class="fa-solid fa-circle-info text-xs"></i>
+                    </div>
+                </div>
+                <label class="input input-bordered flex items-center gap-2">
+                    <input [(ngModel)]="business_hours" name="wiggleroom" type="number" class="w-12" placeholder="" />
+                    <p class="w-4">h</p>
+                </label>
+            </div>
+
+            <div class="flex justify-between items-center w-full">
+                <div class="flex flex-col w-full">
+                    <div class="flex items-center space-x-2">
+                        <p class="text-md">Business closure</p>
+                        <div class="tooltip" data-tip="Shutdown of business operations">
+                            <i class="fa-solid fa-circle-info text-xs"></i>
+                        </div>
+                    </div>
+                    <ul class="text-xs opacity-50 list-disc pl-4">
+                        <li *ngFor="let closure of businessclosures_types">{{closure}}</li>
+                        <li *ngFor="let closure of businessclosures_dates">{{closure.date | date }} <span
+                                *ngIf="closure.name != undefined">({{closure.name}})</span></li>
+                    </ul>
+
+                </div>
+
+                <div class="flex h-full">
+                    <button routerLink="/cockpit/settings" class="btn btn-outline">Define</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</dialog>
+
+
+<div *ngIf="alertService.showAlert" class="fixed top-4 right-4 z-50">
+    <div role="alert"
+        [ngClass]="{'alert-error': alertService.alertLevel == 'error', 'alert-success': alertService.alertLevel == 'success', 'alert-warning': alertService.alertLevel == 'warning', 'alert-info': alertService.alertLevel == 'info'}"
+        class="alert">
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>{{ alertService.alertMessage}}</span>
+    </div>
+</div>

@@ -1,0 +1,53 @@
+<div class="flex h-full w-full justify-between">
+    <div class="flex flex-col">
+        <img class="w-52 m-4" src="../../../assets/images/logo/logo.png" alt="Properma Logo">
+    </div>
+    <div class="flex flex-col h-full bg-base-300 w-96 items-center justify-center">
+        <div class="space-y-2 w-80">
+            <h1 class="font-bold text-3xl">Register</h1>
+            <form class="space-y-2 w-full" (submit)="register()">
+                <label class="input input-bordered hidden items-center gap-2">
+                    <i class="fa-solid fa-key text-xs"></i>
+                    <input [(ngModel)]="registerData.token" name="token" type="text" class="grow" placeholder="Activation Token" />
+                </label>
+                <label class="input input-bordered flex items-center gap-2">
+                    <i class="fa-solid fa-at text-xs"></i>
+                    <input [(ngModel)]="registerData.email" name="email" type="text" class="grow" placeholder="Email" disabled />
+                </label>
+                <label class="input input-bordered flex items-center gap-2">
+                    <i class="fa-solid fa-user text-xs"></i>
+                    <input [(ngModel)]="registerData.first_name" name="first_name" type="text" class="grow" placeholder="First name" />
+                </label>
+                <label class="input input-bordered flex items-center gap-2">
+                    <i class="fa-solid fa-user text-xs"></i>
+                    <input [(ngModel)]="registerData.last_name" name="last_name" type="text" class="grow" placeholder="Last name" />
+                </label>
+
+
+                <label class="input input-bordered flex items-center gap-2">
+                    <i class="fa-solid fa-key text-xs"></i>
+                    <input [(ngModel)]="registerData.password" name="password" type="text" class="grow" placeholder="Password" type="password" />
+                </label>
+                <label class="input input-bordered flex items-center gap-2">
+                    <i class="fa-solid fa-key text-xs"></i>
+                    <input [(ngModel)]="registerData.confirm_password" name="confirm_password" type="text" class="grow" placeholder="Confirm password" type="password" />
+                </label>
+
+                <button [ngClass]="{'btn-disabled' : isLoading}" type="submit" class="btn btn-primary font-bold"><span *ngIf="isLoading" class="loading loading-spinner loading-md"></span><i class="fa-solid fa-right-to-bracket"></i> Register</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<div *ngIf="alertService.showAlert" class="fixed top-4 right-4 z-50">
+    <div role="alert"
+      [ngClass]="{'alert-error': alertService.alertLevel == 'error', 'alert-success': alertService.alertLevel == 'success', 'alert-warning': alertService.alertLevel == 'warning', 'alert-info': alertService.alertLevel == 'info'}"
+      class="alert">
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>{{ alertService.alertMessage}}</span>
+    </div>
+  </div>

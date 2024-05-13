@@ -1,0 +1,191 @@
+<div class="flex w-full h-full flex-col p-8 space-y-4 overflow-hidden">
+    <div class="flex flex-col w-full">
+        <div class="flex justify-between items-center w-full">
+            <h1 class="text-4xl font-semibold">Projects</h1>
+            <button onclick="addProject.showModal()" class="btn btn-primary btn-sm"><i class="fa-solid fa-plus"></i>
+                New</button>
+        </div>
+    </div>
+    <div class="flex flex-col space-y-4 overflow-hidden">
+        <div class="flex space-x-2">
+            <label class="input input-bordered flex items-center gap-2 w-4/12">
+                <input [(ngModel)]="search" (ngModelChange)="filterProjects()" type="text" class="grow"
+                    placeholder="Search" />
+                <i *ngIf="search.length == 0" class="fa-solid fa-magnifying-glass"></i>
+                <i *ngIf="search.length != 0" (click)="clearSearch()"
+                    class="fa-solid fa-circle-xmark cursor-pointer"></i>
+            </label>
+            <!-- <button class="btn">Filter</button> -->
+            <span *ngIf="isLoading" class="loading loading-spinner loading-md"></span>
+        </div>
+        <div class="overflow-auto">
+            <table class="table">
+                <!-- head -->
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Beschreibung</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="hover cursor-pointer" (click)="showDetails(project)"
+                        *ngFor="let project of filteredProjects; let i = index">
+                        <td>{{project.name}}</td>
+                        <td>
+                            <p class="line-clamp-2">{{project.description}}</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<dialog id="addProject" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+        <div class="flex flex-col space-y-2">
+            <h3 class="font-bold text-lg">Add a new project</h3>
+            <form (submit)="addProject()" class="space-y-2 flex flex-col">
+                <input [(ngModel)]="newProjectData.name" name="createprojectname" type="text" placeholder="Project name"
+                    class="input input-bordered w-full max-w-xs" />
+                <textarea [(ngModel)]="newProjectData.description" name="createprojectdescription" class="textarea textarea-bordered min-h-32 w-full" placeholder="Project description"></textarea>
+                <button type="submit" class="btn"><i class="fa-solid fa-plus"></i> Add</button>
+            </form>
+        </div>
+    </div>
+</dialog>
+
+<dialog id="projectDetails" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+        <h3 class="font-bold text-lg">{{ currentProject.name }}</h3>
+        <p *ngIf="currentProject.description?.length! > 0" class="py-1">{{ currentProject.description }}</p>
+        <div class="flex items-center gap-4 opacity-50">
+            <p class="py-1 font-semibold text-xs"><i [ngClass]="{ 'fa-lock': currentProject.lock, 'fa-lock-open': !currentProject.lock }" class="fa-solid"></i> {{ currentProject.lock ? 'Project locked' : 'Project not locked' }}</p>
+            <p class="py-1 font-semibold text-xs"><i class="fa-solid fa-chess-king" title="Project Manager"></i> {{currentProject.manager != undefined ? currentProject.manager : 'No Manager yet'}}</p>
+        </div>
+        <div class="divider p-0 m-0"></div>
+
+        <div class="flex flex-col space-y-2">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <h3 class="font-bold text-md">Ressources</h3>
+                    <span *ngIf="ressourceLoading" class="loading loading-spinner loading-md"></span>
+    
+                </div>
+            </div>
+
+            <p *ngIf="currentProjectRessources.length == 0" class="text-xs">No ressources planed right now</p>
+
+            <div *ngIf="currentProjectRessources.length != 0" class="flex flex-col space-y-1">
+
+
+                <div *ngFor="let ressource of currentProjectRessources; let i = index" class="flex items-center w-full justify-between">
+                    <div class="flex items-center space-x-2">
+                        <!-- <i *ngIf="editSkillTime" class="text-xs fa-solid fa-pen-to-square"></i> -->
+                        <!-- <i *ngIf="editSkillTime" class="text-xs fa-solid fa-trash text-primary cursor-pointer"></i> -->
+                        <!-- <button *ngIf="editSkillTime" class="btn btn-xs"><i class="text-xs fa-solid fa-pen-to-square"></i></button> -->
+                        <button (click)="deleteprojectressource(ressource.id)" *ngIf="editSkillTime" class="btn btn-xs"><i class="text-xs fa-solid fa-trash"></i></button>
+                        <p class="text-sm">{{ressource.skill_name}}</p>
+                    </div>
+
+                    <div class="tooltip tooltip-left" [ngClass]="{'tooltip-open' : i==0 && editSkillTime}" data-tip="Click to change">
+                        <p class="text-sm cursor-pointer">{{timeConverter("hours",ressource.time).toFixed(0)}}h</p>
+                      </div>
+                      <!-- <p class="text-sm cursor-pointer">{{timeConverter("hours",ressource.time).toFixed(0)}}h</p> -->
+
+                    <!-- <p class="text-sm">{{timeConverter("hours",ressource.time).toFixed(0)}}h</p> -->
+                        <!-- <input *ngIf="editSkillTime"  type="text" placeholder="Needed time" class="input input-bordered w-6/12" value="{{ressource.time}}" /> -->
+                </div>
+                <div *ngIf="!editSkillTime" class="flex justify-end">
+                    <div>
+                        <div class="divider m-0"></div>
+                        <p class="font-bold">{{timeConverter("hours",calculateTotalTime()).toFixed(0)}}h</p>
+                    </div>
+                </div>
+    
+            </div>
+            
+            <div class="flex items-center space-x-2">
+                <div *ngIf="editSkillTime == false">
+                    <button (click)="openaddressource()" class="btn btn-xs"><i class="fa-solid fa-plus"></i> Add ressources</button>
+                </div>
+
+                <div class="space-x-2">
+                    <button *ngIf="editSkillTime == false && currentProjectRessources.length != 0" (click)="editSkillTime = true" class="btn btn-xs btn-ghost"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+
+                    <!-- <button *ngIf="editSkillTime == true" (click)="editSkillTime = false" class="btn btn-xs btn-ghost"><i class="fa-solid fa-ban"></i> Cancel</button> -->
+                    <button *ngIf="editSkillTime == true" (click)="editSkillTime = !editSkillTime" class="btn btn-xs"><i class="fa-solid fa-check"></i> Finish</button>
+                </div>
+            </div>
+
+    
+        </div>
+
+
+        <div class="divider"></div>
+
+        <div class="flex items-center space-x-2 w-full">
+            <button (click)="deleteProject()" class="btn btn-error"><i class="fa-solid fa-trash"></i> Delete</button>
+            <!-- <button class="btn"><i class="fa-solid fa-lock"></i> Unlock</button> -->
+            <!-- <div class="tooltip tooltip-right" [attr.data-tip]="currentProject.lock ? 'Project locked. Wont be processed' : 'Project unlocked. Will be processed'">
+                <button (click)="swapProjectLock(!currentProject.lock, currentProject.id!.toString())" class="btn"><i [ngClass]="{ 'fa-lock': currentProject.lock, 'fa-lock-open': !currentProject.lock }" class="fa-solid"></i>{{currentProject.lock}}</button>
+              </div> -->
+        </div>
+    </div>
+</dialog>
+
+<dialog id="addProjectRessource" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+        <div class="flex flex-col space-y-2">
+            <h3 class="font-bold text-lg">Add ressource to {{currentProject.name}}</h3>
+
+            <div *ngIf="selectedSkill.id == undefined" class="join join-vertical">
+                <input [(ngModel)]="skillSearchString" (ngModelChange)="searchSkill($event)" type="text" placeholder="Skill" class="input input-bordered w-full join-item" />
+                <div class="flex max-h-52 flex-col join-items bg-base-200 overflow-scroll">
+                    <div (click)="selectedSkill = skill" *ngFor="let skill of searchedSkills; let i = index" class="flex items-center py-1 px-4 cursor-pointer">
+                        <p>{{skill.name}}</p>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+            <div *ngIf="selectedSkill.id != undefined" class="flex flex-col space-y-2">
+                <div class="flex items-center space-x-2">
+                    <p  class="font-semibold">{{selectedSkill.name}}</p>
+                    <button (click)="selectedSkill = {}" class="btn btn-xs"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+    
+                <input [(ngModel)]="skillTime" type="number" placeholder="Time in hours" class="input input-bordered w-full join-item" />
+            </div>
+
+
+
+
+            <button [ngClass]="{'btn-disabled': selectedSkill.id == undefined || !skillTime || addRessourceLoading}" (click)="addprojectressource()" type="submit" class="btn"><span *ngIf="addRessourceLoading" class="loading loading-spinner loading-md"></span> <i class="fa-solid fa-plus"></i> Add</button>
+        </div>
+    </div>
+</dialog>
+
+<div *ngIf="alertService.showAlert" class="fixed top-4 right-4 z-50">
+    <div role="alert"
+        [ngClass]="{'alert-error': alertService.alertLevel == 'error', 'alert-success': alertService.alertLevel == 'success', 'alert-warning': alertService.alertLevel == 'warning', 'alert-info': alertService.alertLevel == 'info'}"
+        class="alert">
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>{{ alertService.alertMessage}}</span>
+    </div>
+</div>

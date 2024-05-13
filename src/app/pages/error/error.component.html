@@ -1,0 +1,15 @@
+<div class="flex h-full w-full justify-center items-center">
+    <div class="flex space-x-4 h-64">
+        <div class="flex flex-col justify-between h-full">
+            <div class="flex flex-col space-y-3">
+                <p>Error 404</p>
+                <h1 class="text-6xl font-bold">Oops!</h1>
+                <p>We can't see the page you are looking for.</p>     
+            </div>
+            <div class="flex items-end justify-between h-full">
+                <button (click)="goback()" class="btn btn-primary btn-outline"><i class="fa-solid fa-arrow-left"></i>Go back</button>
+            </div>
+        </div>
+        <img class="w-80 hidden md:flex object-contain" src="../../../assets/images/ghost.png" alt="Ghost image">
+    </div>
+</div>

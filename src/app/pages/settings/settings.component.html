@@ -1,0 +1,289 @@
+<div class="flex w-full h-full flex-col p-4 lg:p-8 space-y-4 overflow-y-auto overflow-x-hidden">
+  <div class="flex flex-col">
+    <h1 class="text-4xl font-semibold">Settings</h1>
+  </div>
+  <div class="flex flex-col space-y-4">
+
+    <div class="flex flex-col w-full bg-base-200 rounded-xl p-4">
+      <div>
+        <p class="font-bold text-xl">Account</p>
+        <p>Change your account</p>
+      </div>
+  
+      <div class="divider"></div>
+  
+      <div class="flex w-full space-x-8 justify-between">
+        <div class="flex flex-col">
+          <p class="font-bold">Personal Data</p>
+          <p>Change your email, name or password</p>
+        </div>
+        <div class="flex space-x-2">
+          <button (click)="changeData()" class="btn btn-outline">Change Data</button>
+        </div>
+      </div>
+
+      <br>
+
+      <div class="flex w-full space-x-8 justify-between">
+        <div class="flex flex-col">
+          <p class="font-bold">Password</p>
+          <p>Change your current password</p>
+        </div>
+        <div class="flex space-x-2">
+          <button onclick="changepasswordmodal.showModal()" class="btn btn-outline">Change Password</button>
+        </div>
+      </div>
+  
+      <br>  
+      <div class="flex w-full space-x-8 justify-between">
+        <div class="flex flex-col">
+          <p class="font-bold">Logout</p>
+          <p>-</p>
+        </div>
+        <div class="flex space-x-2">
+          <button (click)="logout()" class="btn btn-outline">Logout</button>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div class="flex flex-col w-full bg-base-200 rounded-xl p-4">
+      <div>
+        <p class="font-bold text-xl">Appearance</p>
+        <p>Change how the website looks</p>
+      </div>
+  
+      <div class="divider"></div>
+  
+      <div class="flex w-full space-x-8 justify-between">
+        <div class="flex flex-col">
+          <p class="font-bold">Interface theme</p>
+          <p>Select your preference</p>
+        </div>
+        <div class="flex space-x-8">
+          <img (click)="themeService.changeTheme('dark')" class="w-52 object-contain shadow-2xl cursor-pointer rounded-md"
+            src="../../../assets/images/darkmode.png" alt="Dark mode">
+          <img (click)="themeService.changeTheme('light')"
+            class="w-52 object-contain shadow-2xl cursor-pointer rounded-md" src="../../../assets/images/lightmode.png"
+            alt="Light mode">
+        </div>
+      </div>
+  
+      <br>
+  
+      <div class="flex w-full space-x-8 justify-between">
+        <div class="flex flex-col">
+          <p class="font-bold">Language</p>
+          <p>Which language should the dashboard be in</p>
+        </div>
+        <div class="flex">
+          <select class="select select-bordered w-full max-w-xs">
+            <option disabled selected>Language</option>
+            <option>German</option>
+            <option>English</option>
+            <option>French</option>
+            <option>Spain</option>
+            <option>Italian</option>
+          </select>
+        </div>
+      </div>
+    </div>    
+
+
+    <div class="flex flex-col w-full bg-base-200 rounded-xl p-4">
+      <div>
+        <p class="font-bold text-xl">Employer directives</p>
+        <p>Employer </p>
+      </div>
+  
+      <div class="divider"></div>
+  
+      <div class="flex w-full space-x-8 justify-between">
+        <div class="flex flex-col">
+          <p class="font-bold">Business closure</p>
+          <p>Days when nobody is operating</p>
+        </div>
+        <div class="flex space-x-2">
+          <button onclick="businessclousremodal.showModal()" class="btn btn-outline">Define</button>
+        </div>
+      </div>
+  
+      <br>
+      
+      <div class="flex w-full space-x-8 justify-between">
+        <div class="flex flex-col">
+          <p class="font-bold">Business hours</p>
+          <p>Regular hours when business occurs</p>
+        </div>
+        <div class="flex space-x-2 items-center">
+          <label class="input input-bordered flex items-center gap-2">
+            <input [(ngModel)]="business_hours" name="wiggleroom" type="number" class="w-12" placeholder="" />
+            <p class="w-16">hours/day</p>
+        </label>
+        <button [ngClass]="{'btn-disabled' : this.business_hours == this.business_hours_old}" (click)="saveBusinessHourInformation()" class="btn btn-outline"><i class="fa-regular fa-floppy-disk"></i></button>
+        </div>
+      </div>
+
+      <br>
+
+
+    <div class="flex w-full space-x-8 justify-between">
+      <div class="flex flex-col">
+        <p class="font-bold">Wiggle room</p>
+        <p>TIme flexibility in percentage per skill</p>
+      </div>
+      <div class="flex space-x-2 items-center">
+        <label class="input input-bordered flex items-center gap-2">
+          <input [(ngModel)]="wiggle_room" name="wiggleroom" type="number" class="w-12" placeholder="" />
+          <p class="w-4">%</p>
+      </label>
+      <button [ngClass]="{'btn-disabled' : this.wiggle_room == this.wiggle_room_old}" (click)="saveWiggleRoomInformation()" class="btn btn-outline"><i class="fa-regular fa-floppy-disk"></i></button>
+      </div>
+    </div>
+
+    </div>
+
+
+
+    
+
+  </div>
+</div>
+
+
+
+<dialog id="changepasswordmodal" class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box">
+    <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    </form>
+    <div class="flex flex-col space-y-2">
+        <h3 class="font-bold text-lg">Change Password</h3>
+
+        <form (submit)="updatePassword()" class="space-y-2">
+          <label class="input input-bordered flex items-center gap-2">
+            <i class="fa-solid fa-key text-xs"></i>
+            <input [(ngModel)]="passwordData.currentpassword" name="currentpassword" type="password" class="grow" placeholder="Current password" />
+          </label>
+
+          <label class="input input-bordered flex items-center gap-2">
+            <i class="fa-solid fa-key text-xs"></i>
+            <input [(ngModel)]="passwordData.newpassword" name="newpassword" type="password" class="grow" placeholder="New password" />
+          </label>
+
+          <label class="input input-bordered flex items-center gap-2">
+            <i class="fa-solid fa-key text-xs"></i>
+            <input [(ngModel)]="passwordData.confirmnewpassword" name="confirmnewpassword" type="password" class="grow" placeholder="Confirm new password" />
+          </label>
+
+          <br>
+          <div class="divider"></div>
+          <button type="submit" [ngClass]="{'btn-disabled' : !isPasswordOk()}" class="btn">Update</button>
+  
+        </form>
+        
+    </div>
+</div>
+</dialog>
+
+<dialog id="changeUserData" class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box">
+    <form method="dialog">
+        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    </form>
+    <div class="flex flex-col space-y-2">
+        <h3 class="font-bold text-lg">Change your data</h3>
+
+        <label class="input input-bordered flex items-center gap-2">
+          <i class="fa-solid fa-user text-xs"></i>
+          <input [(ngModel)]="userData.first_name" name="email" type="text" class="grow" placeholder="First Name"/>
+        </label>
+
+        <label class="input input-bordered flex items-center gap-2">
+          <i class="fa-solid fa-user text-xs"></i>
+          <input [(ngModel)]="userData.last_name" name="email" type="text" class="grow" placeholder="Last Name"/>
+        </label>
+
+        <label class="input input-bordered flex items-center gap-2">
+          <i class="fa-solid fa-at text-xs"></i>
+          <input disabled [(ngModel)]="userData.email" name="email" type="text" class="grow input-disabled" placeholder="Email" autocomplete="username"/>
+        </label>
+        
+        <br>
+        <div class="divider"></div>
+        <button (click)="changeUserData()" [ngClass]="{'btn-disabled' : !isUserDataChanged()}" class="btn">Update</button>
+    </div>
+</div>
+</dialog>
+
+<dialog id="businessclousremodal" class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    </form>
+    <div class="flex flex-col w-full space-y-2">
+        <h3 class="font-bold text-lg">Define business closure</h3>
+
+        <div class="flex flex-wrap py-1 gap-1 items-center">
+          <p class=""><span class="opacity-50">Selected frequencies: </span></p>
+          <!-- <p (click)="removeClosure(closure.id)" *ngFor="let closure of businessclosures_types">{{closure.typename}}</p> -->
+          <div class="badge hover:badge-error cursor-pointer" (click)="removeClosure(closure.id)" *ngFor="let closure of businessclosures_types">{{closure.typename}}</div>
+        </div>
+
+        <div class="flex flex-wrap py-1 gap-1 items-center">
+          <p class=""><span class="opacity-50">Selected dates: </span></p>
+          <div (click)="removeClosure(closure.id)" *ngFor="let closure of businessclosures_dates" class="badge hover:badge-error cursor-pointer">{{closure.date | date }}<span *ngIf="closure.name != undefined"> ({{closure.name}})</span></div>
+          <!-- <p (click)="removeClosure(closure.id)" *ngFor="let closure of businessclosures_dates">{{closure.date | date }}<span *ngIf="closure.name != undefined"> ({{closure.name}})</span>, </p> -->
+        </div>
+        <p class="text-error opacity-80">*click to remove</p>
+
+
+
+        <div class="divider"></div>
+    
+        <div class="flex items-center w-full justify-between">
+            <p>Frequent days</p>
+            <div class="flex items center space-x-1">
+                <select class="select select-bordered w-full" [(ngModel)]="typeSelector">
+                    <option value="" disabled selected>Choose</option>
+                    <option value="0">Weekend</option>
+                    <option value="8">Weekdays</option>
+                    <option value="1">Monday</option>
+                    <option value="2">Tuesday</option>
+                    <option value="3">Wednesday</option>
+                    <option value="4">Thursday</option>
+                    <option value="5">Friday</option>
+                    <option value="6">Saturday</option>
+                    <option value="7">Sunday</option>
+                  </select>
+                  <button (click)="addType('type')" class="btn" [ngClass]="{'btn-disabled' : typeSelector === ''}"><i class="fa-solid fa-plus"></i></button>
+            </div>
+        </div>
+
+        <div class="flex items-center w-full justify-between">
+            <p>Custom Date</p>
+            <div class="flex items center space-x-1">
+                <input class="input input-bordered" type="date" id="start" name="trip-start" [(ngModel)]="dateSelector" />
+                <button (click)="addType('date')" [ngClass]="{'btn-disabled' : dateSelector == ''}" class="btn"><i class="fa-solid fa-plus"></i></button>
+    
+            </div>
+        </div>
+    
+    </div>
+
+  </div>
+</dialog>
+
+<div *ngIf="alertService.showAlert" class="fixed top-4 right-4 z-50">
+  <div role="alert"
+    [ngClass]="{'alert-error': alertService.alertLevel == 'error', 'alert-success': alertService.alertLevel == 'success', 'alert-warning': alertService.alertLevel == 'warning', 'alert-info': alertService.alertLevel == 'info'}"
+    class="alert">
+    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span>{{ alertService.alertMessage}}</span>
+  </div>
+</div>

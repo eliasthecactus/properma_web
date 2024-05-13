@@ -1,0 +1,55 @@
+<div class="flex h-full w-full justify-between">
+    <div class="flex h-full flex-col md:w-80 bg-base-300 p-4 space-y-4">
+        <img class="w-12 object-contain md:hidden" src="../../../assets/images/logo/logo_image_only.png" alt="Properma Logo">
+        <img class="w-60 object-contain hidden md:block" src="../../../assets/images/logo/logo.png" alt="Properma Logo">
+        <div class="flex h-full flex-col justify-between">
+            <div class="flex flex-col w-full space-y-6 py-4">
+                <div routerLink="/cockpit/dashboard" routerLinkActive #rladashboard="routerLinkActive" class="flex items-center space-x-4 cursor-pointer">
+                    <div class="w-1 bg-primary h-full rounded-full {{rladashboard.isActive ? 'opacity-100':'opacity-0'}}"></div>
+                    <i class="fa-solid fa-chart-line w-5 text-md {{rladashboard.isActive ? 'opacity-100':'opacity-60'}}"></i>
+                    <a class="font-bold text-xl {{rladashboard.isActive ? 'opacity-100':'opacity-60'}} hidden md:flex">Dashboard</a>
+                </div>
+                <div routerLink="/cockpit/planer" routerLinkActive #rlaplaner="routerLinkActive" class="flex items-center space-x-4 cursor-pointer">
+                    <div class="w-1 bg-primary h-full rounded-full {{rlaplaner.isActive ? 'opacity-100':'opacity-0'}}"></div>
+                    <i class="fa-solid fa-microchip w-5 text-md {{rlaplaner.isActive ? 'opacity-100':'opacity-60'}}"></i>
+                    <a class="font-bold text-xl {{rlaplaner.isActive ? 'opacity-100':'opacity-60'}} hidden md:flex">Planer</a>
+                </div>
+                <div class="divider"></div>
+                <div routerLink="/cockpit/usermgt" routerLinkActive #rlausermgt="routerLinkActive" class="flex items-center space-x-4 cursor-pointer">
+                    <div class="w-1 bg-primary h-full rounded-full {{rlausermgt.isActive ? 'opacity-100':'opacity-0'}}"></div>
+                    <i class="fa-solid fa-user w-5 text-md {{rlausermgt.isActive ? 'opacity-100':'opacity-60'}}"></i>
+                    <a class="font-bold text-xl {{rlausermgt.isActive ? 'opacity-100':'opacity-60'}} hidden md:flex">Users</a>
+                </div>
+                <div routerLink="/cockpit/projectmgt" routerLinkActive #rlaprojectmgt="routerLinkActive" class="flex items-center space-x-4 cursor-pointer">
+                    <div class="w-1 bg-primary h-full rounded-full {{rlaprojectmgt.isActive ? 'opacity-100':'opacity-0'}}"></div>
+                    <i class="fa-solid fa-diagram-project w-5 text-md {{rlaprojectmgt.isActive ? 'opacity-100':'opacity-60'}}"></i>
+                    <a class="font-bold text-xl {{rlaprojectmgt.isActive ? 'opacity-100':'opacity-60'}} hidden md:flex">Projects</a>
+                </div>
+
+                <div routerLink="/cockpit/skillsmgt" routerLinkActive #rlaskillmgt="routerLinkActive" class="flex items-center space-x-4 cursor-pointer">
+                    <div class="w-1 bg-primary h-full rounded-full {{rlaskillmgt.isActive ? 'opacity-100':'opacity-0'}}"></div>
+                    <i class="fa-solid fa-thumbs-up w-5 text-md {{rlaskillmgt.isActive ? 'opacity-100':'opacity-60'}}"></i>
+                    <a class="font-bold text-xl {{rlaskillmgt.isActive ? 'opacity-100':'opacity-60'}} hidden md:flex">Skills</a>
+                </div>
+            </div>
+            
+            <div class="flex flex-col w-full space-y-6 py-4">
+                <div class="divider"></div>
+                <div routerLink="/cockpit/settings" routerLinkActive #rlasettings="routerLinkActive" class="flex items-center space-x-4 cursor-pointer">
+                    <div class="w-1 bg-primary h-full rounded-full {{rlasettings.isActive ? 'opacity-100':'opacity-0'}}"></div>
+                    <i class="fa-solid fa-gear w-5 text-md {{rlasettings.isActive ? 'opacity-100':'opacity-60'}}"></i>
+                    <a class="font-bold text-xl {{rlasettings.isActive ? 'opacity-100':'opacity-60'}} hidden md:flex">Settings</a>
+                </div>
+                <div routerLink="/cockpit/contact" routerLinkActive #rlacontact="routerLinkActive" class="flex items-center space-x-4 cursor-pointer">
+                    <div class="w-1 bg-primary h-full rounded-full {{rlacontact.isActive ? 'opacity-100':'opacity-0'}}"></div>
+                    <i class="fa-solid fa-envelope w-5 text-md {{rlacontact.isActive ? 'opacity-100':'opacity-60'}}"></i>
+                    <a class="font-bold text-xl {{rlacontact.isActive ? 'opacity-100':'opacity-60'}} hidden md:flex">Contact</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="h-full w-full overflow-hidden">
+        <router-outlet />
+    </div>
+</div>
