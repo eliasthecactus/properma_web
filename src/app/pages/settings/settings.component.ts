@@ -36,21 +36,41 @@ export class SettingsComponent {
 
   typeSelector: string = '';
   dateSelector: string = '';
+  
 
   businessclosures: BusinessClosure[] = [];
   businessclosures_types: {type: number, id: number, typename: string}[] = [];
   businessclosures_dates: { date: Date; name: string; id: number}[] = [];
 
+  serverVersion: string = '';
+
 
   constructor(
     public themeService: ThemeService,
-    private apiService: ApiService,
+    public apiService: ApiService,
     public alertService: AlertService,
     private router: Router,
     private cookieService: CookieService
   ) {
     this.getBusinessData();
     this.getCompanyClosure();
+
+    this.apiService.version().subscribe(
+      (response) => {
+        // console.log(response);
+        if (response.code == 0) {
+          this.serverVersion = response.version;
+        } else {
+          this.serverVersion = "n/A";
+        }
+      },
+      (error) => {
+        this.alertService.show(
+          'error',
+          'There was an error while fetching the version.'
+        );
+      }
+    );
   }
 
 

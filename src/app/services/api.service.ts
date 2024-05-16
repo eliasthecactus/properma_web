@@ -14,6 +14,7 @@ export class ApiService {
 
   // public apiUrl = 'http://127.0.0.1:5001';
   public apiUrl = 'https://properma.onrender.com';
+  public uiVersion = '1.0.0-b1';
 
   tokenManager(): void {
     const access_token_expire = localStorage.getItem('accesshTokenExpire')
@@ -70,6 +71,10 @@ export class ApiService {
 
   register(userData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/api/user/register`, userData);
+  }
+
+  version(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/api/version`);
   }
 
   preregister(userData: any): Observable<any> {

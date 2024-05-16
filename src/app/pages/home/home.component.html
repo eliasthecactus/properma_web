@@ -1,1 +1,85 @@
-<p>home works!</p>
+<div class="flex flex-col w-full h-full items-center">
+    <div class="flex items-center w-full p-2 z-20">
+        <div class="md:flex items-center flex-1 space-x-2 hidden">
+            <a (click)="scrollTo('faq')" class="btn btn-ghost">FAQ</a>
+            <a class="btn btn-ghost">Wall of <i class="fa-regular fa-heart"></i></a>
+
+            <div class="dropdown">
+                <div tabindex="0" role="button" class="btn btn-ghost m-1 whitespace-nowrap flex-nowrap">Product <i class="fa-solid fa-chevron-down text-xs"></i></div>
+                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a class="font-semibold">About</a>
+                </ul>
+            </div>
+        </div>
+
+        <div (click)="toggleMenu()" class="md:hidden mx-4 cursor-pointer"><i class="fa-solid fa-bars"></i></div>
+        <div class="flex items-center justify-center md:flex-1 cursor-pointer">
+            <img src="../../../assets/images/logo/logo.png" routerLink="/" class="h-10 hidden lg:flex" alt="Properma Logo">
+            <img src="../../../assets/images/logo/logo_image_only.png" routerLink="/" class="h-10 lg:hidden" alt="Properma Logo">
+        </div>
+
+        <div class="flex items-center flex-1 justify-end gap-2">
+            <button class="btn btn-neutral"><a href="mailto:trash@elias.uno">Contact</a></button>
+            <button routerLink="/login" class="btn btn-primary">Login</button>
+        </div>
+    </div>
+
+    <div (click)="toggleMenu()" id="mobilenavMenu" class="flex flex-col -translate-x-full fixed w-screen h-screen top-0 left-0 bg-base-100 z-30 p-6 ease-in-out duration-300 cursor-pointer">
+        <i class="fa-solid fa-xmark"></i>
+        <div class="flex flex-col flex-1 my-2">
+            <ul>
+                <li class="text-lg font-semibold">abc</li>
+            </ul>
+        </div>
+        <button routerLink="/login" class="btn btn-primary">Login</button>
+    </div>
+
+
+    <div class="flex flex-col w-full h-full overflow-scroll items-center px-8">
+
+
+        <div class="flex flex-col items-center space-y-16 h-full justify-center my-12 md:my-20 lg:my-32">
+            <div class="flex items-center gap-3">
+                <div class="flex items-center space-x-1 text-primary">
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <p>Loved by 1'000 companies</p>
+            </div>
+
+            <div class="space-y-4">
+                <h1 class="font-bold text-6xl md:text-7xl lg:text-8xl text-center">Manage your<br>projects efficiently
+                </h1>
+                <h2 class="text-xl text-center">Add skills, projects and users. Start to manage project ressources in a minute. It's easier than you think.</h2>
+            </div>
+
+            <br>
+            <button class="btn btn-lg btn-primary">Start now</button>
+
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+
+
+
+        <div id="faq" class="w-full max-w-screen-md">
+            <div *ngFor="let faq of faqs" class="collapse collapse-plus bg-base-200 my-2">
+                <input type="radio" name="my-accordion-3" checked="checked" />
+                <div class="collapse-title text-xl font-medium">
+                    {{faq.question}}
+                </div>
+                <div class="collapse-content">
+                    <p>{{faq.answer}}</p>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
