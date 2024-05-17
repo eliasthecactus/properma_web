@@ -15,6 +15,7 @@ export class ApiService {
   // public apiUrl = 'http://127.0.0.1:5001';
   public apiUrl = 'https://properma.onrender.com';
   public uiVersion = '1.0.0-b1';
+  public email = 'trash@elias.uno';
 
   tokenManager(): void {
     const access_token_expire = localStorage.getItem('accesshTokenExpire')
