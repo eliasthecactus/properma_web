@@ -38,6 +38,9 @@
             <ul class="">
                 <li *ngFor="let link of links" (click)="scrollTo(link.anchor)" class="text-2xl font-semibold mt-4">
                     {{link.name}}</li>
+                    <li (click)="scrollTo('community')" class="text-2xl font-semibold mt-4">Wall of <i class="fa-regular fa-heart"></i></li>
+                    <li (click)="scrollTo('faq')" class="text-2xl font-semibold mt-4">FAQ</li>
+    
             </ul>
         </div>
         <button routerLink="/login" class="btn btn-primary">Login</button>
@@ -83,19 +86,51 @@
 
 
 
-        <div id="features" class="w-full">
+        <div id="features" class="flex flex-col w-full bg-base-300 p-6 rounded-3xl gap-4 shadow-xl">
+            <div class="flex flex-col space-y-2 items-center w-full">
+                <h1 class="text-xl font-bold"><span class="text-primary mx-1"><i class="fa-solid fa-cube"></i></span> Features</h1>
+                <p class="text-3xl md:text-5xl font-medium text-center max-w-screen-md opacity-80">We have all the features you're looking for.</p>
+            </div>
+
+            <div class="flex flex-col space-y-16">
+                <div class="flex flex-col sm:flex-row items-center justify-center">
+                    <img class="h-52 xl:h-80 object-contain" src="../../../assets/images/features_images/business-analysis.png" alt="Analysis image">
+                    <div class="flex flex-col">
+                        <h3 class="text-3xl font-semibold opacity-80">In-Depth Insights</h3>
+                        <p class="opacity-50">Data-driven decisions</p>
+                        <p class="max-w-prose">Our project management system offers comprehensive analytics and insights, helping you make informed decisions. Track progress, analyze performance, and identify opportunities for improvement with ease.<</p>
+                    </div>
+                </div>
+                <div class="flex flex-col-reverse sm:flex-row items-center justify-center">
+                    <div class="flex flex-col md:text-right">
+                        <h3 class="text-3xl font-semibold opacity-80">Smart user management</h3>
+                        <p class="opacity-50">Efficient and intuitive</p>
+                        <p class="max-w-prose">Manage users effortlessly with our smart user management features. Import users from LDAP or JSON/CSV files, assign roles, and track skills to ensure the right people are on the right tasks.</p>
+                    </div>
+                    <img class="h-52 xl:h-80 object-contain" src="../../../assets/images/features_images/user.png" alt="User image">
+                </div>
+                <div class="flex flex-col sm:flex-row items-center justify-center">
+                    <img class="h-52 xl:h-80 object-contain" src="../../../assets/images/features_images/hourglass.png" alt="Hours image">
+                    <div class="flex flex-col">
+                        <h3 class="text-3xl font-semibold opacity-80">Smart ressource distribution</h3>
+                        <p class="opacity-50">Optimize your workflow</p>
+                        <p class="max-w-prose">Maximize efficiency with our smart resource distribution tools. Allocate tasks based on skill sets, availability, and workload, ensuring projects are completed on time and to the highest standards.</p>
+                    </div>
+                </div>
+            </div>
 
         </div>
 
 
-        <div id="pricing" class="flex flex-col w-full bg-base-300 p-6 rounded-3xl gap-4">
+        <div id="pricing" class="flex flex-col w-full bg-base-300 p-6 rounded-3xl gap-4 shadow-xl">
             <div class="flex flex-col space-y-2 items-center w-full">
                 <h1 class="text-xl font-bold"><span class="text-primary"><i class="fa-solid fa-ruble-sign"></i></span>ricing</h1>
                 <!-- <hr class="bg-primary h-1.5 border-0 rounded"> -->
+                <p class="text-3xl md:text-5xl font-medium text-center max-w-screen-md opacity-80">No hidden costs. You can count on us.</p>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="table">
+            <div class="overflow-x-auto justify-center flex">
+                <table class="table max-w-screen-md">
                   <thead class="text-center">
                     <tr>
                       <th class="whitespace-nowrap"></th> 
@@ -106,13 +141,14 @@
                                 <p class="text-3xl font-bold">${{plan.price}}</p>
                                 <p class="opacity-50">/user/month</p>
                             </div>
+                            <button class="btn btn-xs btn-primary mt-4">Get it now</button>
                         </div>
                       </th> 
                     </tr>
                   </thead> 
                   <tbody class="text-center">
                     <tr *ngFor="let content of plans.content">
-                        <th>{{content.title}}</th>
+                        <th class="text-right">{{content.title}}</th>
                         <td *ngFor="let included of content.included">
                             <i *ngIf="included == 'true'" class="fa-solid fa-check text-primary"></i>
                             <i *ngIf="included == 'false'" class="fa-solid fa-xmark"></i>
@@ -120,56 +156,91 @@
                         </td>
                     </tr>
                   </tbody>
-                  <tfoot>
-                    <tr>
-                      <th></th> 
-                      <th></th> 
-                      <th></th> 
-                    </tr>
-                  </tfoot>
                 </table>
               </div>
 
         </div>
 
 
-        <div id="community" class="w-full flex flex-col space-y-4 bg-base-300 p-6 rounded-3xl">
+        <div id="community" class="w-full flex flex-col space-y-4 bg-base-300 p-6 rounded-3xl items-center shadow-xl">
             <div class="flex flex-col items-center w-full">
                 <h1 class="text-xl font-bold">Wall of <i class="fa-solid fa-heart text-primary"></i></h1>
+                <p class="text-3xl md:text-5xl font-medium text-center max-w-screen-md opacity-80">Our community loves us, and we know why.</p>
             </div>
-            <div class="flex overflow-hidden">
-                <div class="flex items center h-8 md:h-12 gap-8 scrolling-container w-full">
+
+            <!-- <div class="stats shadow max-w-screen-lg">
+                <div class="stat">
+                    <div class="stat-figure text-primary">
+                        <i class="fa-regular fa-user text-xl"></i>
+                    </div>
+                    <div class="stat-title">Total Likes</div>
+                    <div class="stat-value text-primary">25.6K</div>
+                    <div class="stat-desc">21% more than last month</div>
+                </div>
+                
+                <div class="stat">
+                    <div class="stat-figure text-secondary">
+                        <i class="fa-regular fa-building text-xl"></i>
+                    </div>
+                    <div class="stat-title">Page Views</div>
+                    <div class="stat-value text-secondary">2.6M</div>
+                    <div class="stat-desc">21% more than last month</div>
+                </div>
+                
+                <div class="stat">
+                    <div class="stat-figure text-secondary">
+                        <i class="fa-regular fa-diagram-project text-xl"></i>
+                    </div>
+                    <div class="stat-title">Page Views</div>
+                    <div class="stat-value text-secondary">2.6M</div>
+                    <div class="stat-desc">21% more than last month</div>
+                </div>
+            </div> -->
+
+
+            <div class="flex overflow-hidden w-full">
+                <div class="flex items center h-6 md:h-12 gap-4 md:gap-12 scrolling-container w-full">
                     <img src="=../../../assets/images/monochrome_logos/kwo.svg" class="" alt="logo">
+                    <img src="=../../../assets/images/monochrome_logos/bkw.svg" class="" alt="logo">
+                    <img src="=../../../assets/images/monochrome_logos/migors.svg" class="" alt="logo">
+                    <img src="=../../../assets/images/monochrome_logos/siemens.svg" class="" alt="logo">
+                    <img src="=../../../assets/images/monochrome_logos/nestle.svg" class="" alt="logo">
+                    <img src="=../../../assets/images/monochrome_logos/swisscom.svg" class="" alt="logo">
+                    <img src="=../../../assets/images/monochrome_logos/lindtspruengli.svg" class="" alt="logo">
+                    <img src="=../../../assets/images/monochrome_logos/gibb.svg" class="" alt="logo">
+
+
                     <img src="=../../../assets/images/monochrome_logos/kwo.svg" class="" alt="logo">
-                    <img src="=../../../assets/images/monochrome_logos/kwo.svg" class="" alt="logo">
-                    <img src="=../../../assets/images/monochrome_logos/kwo.svg" class="" alt="logo">
-                    <img src="=../../../assets/images/monochrome_logos/kwo.svg" class="" alt="logo">
-                    <img src="=../../../assets/images/monochrome_logos/kwo.svg" class="" alt="logo">
-                    <img src="=../../../assets/images/monochrome_logos/kwo.svg" class="" alt="logo">
-                    <img src="=../../../assets/images/monochrome_logos/kwo.svg" class="" alt="logo">
-                    <img src="=../../../assets/images/monochrome_logos/kwo.svg" class="" alt="logo">
-                    <img src="=../../../assets/images/monochrome_logos/kwo.svg" class="" alt="logo">
-                    <img src="=../../../assets/images/monochrome_logos/kwo.svg" class="" alt="logo">
-                    <img src="=../../../assets/images/monochrome_logos/kwo.svg" class="" alt="logo">
-                    <img src="=../../../assets/images/monochrome_logos/kwo.svg" class="" alt="logo">
-                    <img src="=../../../assets/images/monochrome_logos/kwo.svg" class="" alt="logo">
+                    <img src="=../../../assets/images/monochrome_logos/bkw.svg" class="" alt="logo">
+                    <img src="=../../../assets/images/monochrome_logos/migors.svg" class="" alt="logo">
+                    <img src="=../../../assets/images/monochrome_logos/siemens.svg" class="" alt="logo">
+                    <img src="=../../../assets/images/monochrome_logos/nestle.svg" class="" alt="logo">
+                    <img src="=../../../assets/images/monochrome_logos/swisscom.svg" class="" alt="logo">
+                    <img src="=../../../assets/images/monochrome_logos/lindtspruengli.svg" class="" alt="logo">
+                    <img src="=../../../assets/images/monochrome_logos/gibb.svg" class="" alt="logo">
+                    
                 </div>
             </div>
 
         </div>
 
 
-        <div id="faq" class="w-full max-w-screen-md">
-            <div class="flex flex-col items-center w-full">
-                <h1 class="text-xl font-bold">F.A.Q.</h1>
-            </div>
-            <div *ngFor="let faq of faqs" class="collapse collapse-plus bg-base-200 my-2">
-                <input type="radio" name="my-accordion-3" checked="checked" />
-                <div class="collapse-title text-xl font-medium">
-                    {{faq.question}}
+        <div id="faq" class="w-full flex flex-col bg-base-300 p-6 rounded-3xl gap-4 items-center shadow-xl">
+
+            <div class="max-w-screen-md">
+                <div class="flex flex-col items-center w-full">
+                    <h1 class="text-xl font-bold">F<span class="text-primary mx-1"><i class="fa-solid fa-clipboard-question"></i></span>Q</h1>
+                    <!-- <hr class="bg-primary h-1.5 border-0 rounded"> -->
+                    <p class="text-3xl md:text-5xl font-medium text-center max-w-screen-md opacity-80">What our customers ask the most.</p>
                 </div>
-                <div class="collapse-content">
-                    <p>{{faq.answer}}</p>
+                <div *ngFor="let faq of faqs" class="collapse collapse-plus border-base-100 border-4 my-2">
+                    <input type="radio" name="my-accordion-3" checked="checked" />
+                    <div class="collapse-title text-xl font-medium">
+                        {{faq.question}}
+                    </div>
+                    <div class="collapse-content">
+                        <p>{{faq.answer}}</p>
+                    </div>
                 </div>
             </div>
         </div>

@@ -21,7 +21,14 @@ export class LoginComponent {
   isLoading = false;
 
   constructor(private apiService: ApiService, private cookieService: CookieService, private router: Router, public alertService: AlertService) {
-
+    this.apiService.authping().subscribe(
+      (response) => {
+        // console.log(response);
+        if (response.code == 0) {
+          this.router.navigate(['/cockpit']);
+        }
+      }
+    );
   }
 
   userData: any = {

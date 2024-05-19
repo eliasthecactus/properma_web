@@ -14,8 +14,17 @@ export class ApiService {
 
   // public apiUrl = 'http://127.0.0.1:5001';
   public apiUrl = 'https://properma.onrender.com';
-  public uiVersion = '1.0.0-b1';
-  public email = 'trash@elias.uno';
+  public uiVersion = '1.0.0-b2';
+  public email = 'properma@elias.uno';
+
+  localLogout(): void {
+    localStorage.removeItem('accesshTokenExpire')
+    localStorage.removeItem('refreshTokenExpire')
+    localStorage.removeItem('user_id')
+    this.cookieService.delete('refresh_token');
+    this.cookieService.delete('token');
+
+  }
 
   tokenManager(): void {
     const access_token_expire = localStorage.getItem('accesshTokenExpire')
@@ -23,16 +32,10 @@ export class ApiService {
 
     const timestamp = Number((new Date().getTime() / 1000).toFixed(0));
 
-
     // console.log(timestamp - Number(access_token_expire))
     if (timestamp > Number(access_token_expire)) {
       if (timestamp > Number(refresh_token_expire)) {
-        localStorage.removeItem('accesshTokenExpire')
-        localStorage.removeItem('refreshTokenExpire')
-        localStorage.removeItem('user_id')
-        this.cookieService.delete('refresh_token');
-        this.cookieService.delete('token');
-
+        this.localLogout();
         this.router.navigate(['/login']);
       } else {
         this.refresh_token(this.cookieService.get('refresh_token')).subscribe(
@@ -64,6 +67,7 @@ export class ApiService {
 
   constructor(private http: HttpClient, private cookieService: CookieService, private router: Router) { }
 
+
   private getHeaders(): HttpHeaders {
     this.tokenManager();
     var token = this.cookieService.get('token');
@@ -76,6 +80,12 @@ export class ApiService {
 
   version(): Observable<any> {
     return this.http.get(`${this.apiUrl}/api/version`);
+  }
+
+  authping(): Observable<any> {
+    const headers = this.getHeaders();
+    const options = { headers };
+    return this.http.get(`${this.apiUrl}/api/authping`, options);
   }
 
   preregister(userData: any): Observable<any> {

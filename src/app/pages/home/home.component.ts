@@ -40,10 +40,10 @@ export class HomeComponent {
       ],
       content: [
         {
-          title: 'Unlimited users',
+          title: 'Users',
           included: [
-            'true',
-            'true'
+            '1 - Unlimited*',
+            '20 - Unlimited'
           ]
         },      {
           title: 'Unlimited projects',
@@ -79,8 +79,8 @@ export class HomeComponent {
   isMenuOpen: boolean = false;
 
   links: {name: string, anchor: string}[] = [
-    {name: "Pricing", anchor: "pricing"},
-    {name: "Features", anchor: "features"}
+    {name: "Features", anchor: "features"},
+    {name: "Pricing", anchor: "pricing"}
   ];
 
   scrollTo(element: any): void {

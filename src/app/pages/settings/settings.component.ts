@@ -379,7 +379,7 @@ export class SettingsComponent {
   }
 
   logout() {
-    this.cookieService.delete('token');
+    this.apiService.localLogout();
     this.router.navigate(['/login']);
   }
 }
