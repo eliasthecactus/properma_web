@@ -98,7 +98,7 @@
                     <div class="flex flex-col">
                         <h3 class="text-3xl font-semibold opacity-80">In-Depth Insights</h3>
                         <p class="opacity-50">Data-driven decisions</p>
-                        <p class="max-w-prose">Our project management system offers comprehensive analytics and insights, helping you make informed decisions. Track progress, analyze performance, and identify opportunities for improvement with ease.<</p>
+                        <p class="max-w-prose">Our project management system offers comprehensive analytics and insights, helping you make informed decisions. Track progress, analyze performance, and identify opportunities for improvement with ease.</p>
                     </div>
                 </div>
                 <div class="flex flex-col-reverse sm:flex-row items-center justify-center">
@@ -168,10 +168,23 @@
                 <p class="text-3xl md:text-5xl font-medium text-center max-w-screen-md opacity-80">Our community loves us, and we know why.</p>
             </div>
 
-
+<!-- 
             <br><br><br>
             <div class="badge badge-outline">coming soon</div>
-            <br><br><br>
+            <br><br><br> -->
+
+            <div class="flex gap-8 flex-wrap justify-center py-12">
+                <ng-container *ngFor="let person of feedback; let i = index">
+                    <app-feedback-card
+                        [name]="person.name"
+                        [company]="person.company"
+                        [position]="person.position"
+                        [text]="person.text"
+                        [image]="'../../assets/images/feedback_avatars/' + person.image"
+                        class="w-full sm:w-auto">
+                    </app-feedback-card>
+                </ng-container>
+            </div>
 
             <!-- <div class="stats shadow max-w-screen-lg">
                 <div class="stat">

@@ -1,22 +1,87 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api.service';
 import { HttpClientModule } from '@angular/common/http';
+import { FeedbackCardComponent } from '../../components/feedback-card/feedback-card.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, CommonModule, HttpClientModule],
+  imports: [RouterLink, CommonModule, HttpClientModule, FeedbackCardComponent],
   templateUrl: './home.component.html',
   providers: [ApiService],
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
 
+  isMobile: boolean = false;
+
   constructor(public apiService: ApiService) {
 
   }
+
+
+
+
+  feedback: {name: string; company: string; position: string; image: string; text: string}[] = [
+      {
+          "name": "Emily Peterson",
+          "position": "Project Manager",
+          "company": "Google",
+          "text": "Efficiency at its finest! With Properma, we master our projects with ease.",
+          "image": "w1.jpg"
+      },
+      {
+          "name": "David Müller",
+          "position": "Software Engineer",
+          "company": "Microsoft",
+          "text": "Flexibility and agility in software development? No problem with this awesome tool!",
+          "image": "m1.jpg"
+      },
+      {
+          "name": "Olivia Schmidt",
+          "position": "Sales",
+          "company": "Nike",
+          "text": "We like to use the it for Data-driven marketing! Generate leads, win customers, increase sales.",
+          "image": "w2.jpg"
+      },
+      {
+          "name": "Michael Weber",
+          "position": "CEO",
+          "company": "Siemens",
+          "text": "Efficiency and effectiveness in a large corporation? With Properma, everything runs smoothly!",
+          "image": "m2.jpg"
+      },
+      {
+          "name": "Sophia Brown",
+          "position": "Marketing Director",
+          "company": "Amazon",
+          "text": "Properma has transformed our marketing strategy. It's a game-changer!",
+          "image": "w3.jpg"
+      },
+      {
+          "name": "Liam Johnson",
+          "position": "Product Manager",
+          "company": "Apple",
+          "text": "The user-friendly interface of Properma makes managing complex projects a breeze.",
+          "image": "m3.jpg"
+      },
+      {
+        "name": "Noah Williams",
+        "position": "CTO",
+        "company": "Facebook",
+        "text": "Innovative and reliable, Properma has been crucial for our tech development.",
+        "image": "m4.jpg"
+    },
+      {
+          "name": "Isabella Garcia",
+          "position": "Operations Manager",
+          "company": "Tesla",
+          "text": "With Properma, our operations are more streamlined than ever before.",
+          "image": "w4.jpg"
+      }
+  ]
 
   faqs: {question: string, answer: string}[] = [
     {question: 'Who can use this project management platform?', answer: 'Our platform is designed for teams of all sizes, including freelancers, startups, and large enterprises. Anyone looking to efficiently manage projects and distribute tasks can benefit from it.'},
@@ -42,7 +107,7 @@ export class HomeComponent {
         {
           title: 'Users',
           included: [
-            '1 - Unlimited*',
+            '1 - Unlimited',
             '20 - Unlimited'
           ]
         },      {
