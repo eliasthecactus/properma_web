@@ -12,8 +12,8 @@ import { jwtDecode } from 'jwt-decode';
 })
 export class ApiService {
 
-  public apiUrl = 'http://188.245.209.46:80';
-  //public apiUrl = 'https://properma.onrender.com';
+  // public apiUrl = 'http://188.245.209.46:80';
+  public apiUrl = 'https://properma.onrender.com';
   public uiVersion = '1.0.0-b2';
   public email = 'properma@elias.uno';
 
