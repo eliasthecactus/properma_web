@@ -156,6 +156,9 @@ export class PlanerComponent {
     } else {
       this.selectedProjectRessource[0] = ressource;
     }
+/*    console.log(ressource);
+    console.log(this.selectedProjectRessource[0]);*/
+
   }
 
   getColumn(): { title: string; id: string }[] {
@@ -397,11 +400,19 @@ export class PlanerComponent {
         console.log(response);
         if (response.code == 0) {
           this.users = response.users;
+          for (let i=0; i<response.users.length; i++) {
+            this.apiService.getuserskills(this.users[i].id).subscribe(
+              (response) => {
+                this.users[i].skills = response.skills;
+              }
+            )
+          }
           // this.sortTable(this.sortColumn);
         } else {
-          // this.alertService.show("error", response.message);
+          this.alertService.show("error", response.message);
           console.log('error not null ' + response);
         }
+        console.log(this.users)
       },
       (error) => {
         console.log(error);
@@ -409,6 +420,19 @@ export class PlanerComponent {
       },
       () => {}
     );
+  }
+
+  userHasSkill(user: User): boolean {
+    console.log("=====================userHasSkill");
+
+    if (user.skills && this.selectedProjectRessource[0] && user.skills.length > 0) {
+      for (let i = 0; i < user.skills.length; i++) {
+        if (user.skills[i].skill_type_id == this.selectedProjectRessource[0].skill_id) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   swapProjectLock(state: boolean, project_id: string): void {
@@ -442,7 +466,7 @@ export class PlanerComponent {
           // console.log(response);
           for (let i = 0; i < response.projects.length; i++) {
             var projectId = response.projects[i].id
-            
+
 
             this.apiService.getprojectressources(projectId).subscribe(
               (response2) => {

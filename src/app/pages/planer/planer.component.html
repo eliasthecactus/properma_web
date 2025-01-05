@@ -17,7 +17,7 @@
             <div class="flex items-center space-x-4">
                 <div class="flex flex-col">
                     <p class="font-bold text-lg">{{titleString[0]}}</p>
-                    <p class="font-semilight text-xs">{{titleString[1]}}</p>
+                    <p class="font-light text-xs">{{titleString[1]}}</p>
                 </div>
                 <span *ngIf="isLoading" class="loading loading-spinner loading-md"></span>
             </div>
@@ -58,7 +58,7 @@
                 <tbody>
                     <tr *ngFor="let user of users; let i = index" class="border-0">
                         <!-- users down -->
-                        <th class="flex space-x-2 items-center">
+                        <th [ngClass]="{'bg-primary': userHasSkill(user)}" class="flex space-x-2 items-center">
                             <div class="avatar" *ngIf="user.profile_picture">
                                 <div class="w-8 rounded-full">
                                     <img src="https://thispersondoesnotexist.com/" alt="Avatar">
@@ -96,22 +96,25 @@
 
 
 
+    <div class="flex flex-col space-y-2 overflow-auto no-scrollbar">
 
-    <div class="flex flex-col space-y-2" *ngFor="let project of projects">
-        <div class="flex items-center space-x-2">
-            <div class="tooltip tooltip-right"
-                [attr.data-tip]="project.project.lock ? 'Project locked. Wont be processed' : 'Project unlocked. Will be processed'">
-                <i (click)="swapProjectLock(!project.project.lock, project.project.id.toString())"
-                    [ngClass]="{ 'fa-lock': project.project.lock, 'fa-lock-open': !project.project.lock }"
-                    class="cursor-pointer text-xs fa-solid"></i>
+
+        <div class="flex flex-col space-y-2" *ngFor="let project of projects">
+            <div class="flex items-center space-x-2">
+                <div class="tooltip tooltip-right"
+                    [attr.data-tip]="project.project.lock ? 'Project locked. Wont be processed' : 'Project unlocked. Will be processed'">
+                    <i (click)="swapProjectLock(!project.project.lock, project.project.id.toString())"
+                        [ngClass]="{ 'fa-lock': project.project.lock, 'fa-lock-open': !project.project.lock }"
+                        class="cursor-pointer text-xs fa-solid"></i>
+                </div>
+                <p class="text-xl font-semibold">{{project.project.name}}</p>
             </div>
-            <p class="text-xl font-semibold">{{project.project.name}}</p>
-        </div>
-        <div class="flex items-center gap-2 w-full">
-            <div *ngFor="let ressource of project.ressources" (click)="selectProjectRessource(ressource)" [ngClass]="{'badge-primary' : selectedProjectRessource[0] == ressource}" class="badge items-center space-x-1 cursor-pointer">
-                <p>{{ ressource.skill_name }}</p>
-                <!-- <span class="opacity-50 text-xs">{{ ressource.time / 3600 }}h</span> -->
-                <span class="opacity-50 text-xs">{{ getRemainingTime(ressource) / 3600 }}h</span>
+            <div class="flex items-center gap-2 w-full">
+                <div *ngFor="let ressource of project.ressources" (click)="selectProjectRessource(ressource)" [ngClass]="{'badge-primary' : selectedProjectRessource[0] == ressource}" class="badge items-center space-x-1 cursor-pointer">
+                    <p>{{ ressource.skill_name }}</p>
+                    <!-- <span class="opacity-50 text-xs">{{ ressource.time / 3600 }}h</span> -->
+                    <span class="opacity-50 text-xs">{{ getRemainingTime(ressource) / 3600 }}h</span>
+                </div>
             </div>
         </div>
     </div>

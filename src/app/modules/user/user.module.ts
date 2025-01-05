@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {UserSkill} from "../user-skill/user-skill.module";
 
 export interface User {
   id: number;
@@ -11,6 +12,7 @@ export interface User {
   first_name: string;
   last_name: string;
   profile_picture: string;
+  skills?: UserSkill[];
 }
 
 @NgModule({
