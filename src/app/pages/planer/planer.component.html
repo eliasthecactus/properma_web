@@ -43,7 +43,7 @@
         </div>
         <div class="divider"></div>
 
-        <div class="overflow-auto no-scrollbar">
+        <div class="overflow-auto modern-scrollbar">
             <table class="table table-pin-cols border-0 table-xs">
                 <thead>
                     <tr>
@@ -75,15 +75,31 @@
                         </th>
                         <!-- users up -->
 
+<!--
                         <td *ngFor="let col of columns" [id]="col.id+user.id" [ngClass]="{'bg-zinc-200' : slotAssigned(col.id+user.id), 'cursor-pointer' : selectedProjectRessource[0] != undefined}" class="text-center h-10 p-0"
                             (mousedown)="onMouseDown(col.id+user.id)" (mouseleave)="onMouseLeave(col.id+user.id)"
                             (mouseover)="onMouseEnter(col.id+user.id)">
-                            <!-- tbd show which dates are selected already -->
+                            &lt;!&ndash; tbd show which dates are selected already &ndash;&gt;
                             <div class="flex w-full h-full justify-center items-center p-1">
                                 <p class="min-w-12">{{col.id}}{{user.id}}</p>
 
                             </div>
                         </td>
+-->
+                      <td *ngFor="let col of columns"
+                          [id]="col.id+user.id"
+                          [ngClass]="{'cursor-pointer': selectedProjectRessource[0] != undefined}"
+                          class="text-center h-10 p-0"
+                          [style.background-color]="getCellColor(col.id+user.id)"
+                          (mousedown)="onMouseDown(col.id+user.id)"
+                          (mouseleave)="onMouseLeave(col.id+user.id)"
+                          (mouseover)="onMouseEnter(col.id+user.id)">
+
+                        <!-- Display skill name in the cell -->
+                        <div class="flex w-full h-full justify-center items-center p-1">
+                          <p class="min-w-12 text-slate-800 font-bold">{{ getSkillName(col.id+user.id) }}</p>
+                        </div>
+                      </td>
                     </tr>
                 </tbody>
 
@@ -96,27 +112,36 @@
 
 
 
-    <div class="flex flex-col space-y-2 overflow-auto no-scrollbar">
+    <div class="flex flex-col space-y-2 overflow-auto modern-scrollbar">
 
 
-        <div class="flex flex-col space-y-2" *ngFor="let project of projects">
-            <div class="flex items-center space-x-2">
-                <div class="tooltip tooltip-right"
-                    [attr.data-tip]="project.project.lock ? 'Project locked. Wont be processed' : 'Project unlocked. Will be processed'">
-                    <i (click)="swapProjectLock(!project.project.lock, project.project.id.toString())"
-                        [ngClass]="{ 'fa-lock': project.project.lock, 'fa-lock-open': !project.project.lock }"
-                        class="cursor-pointer text-xs fa-solid"></i>
-                </div>
-                <p class="text-xl font-semibold">{{project.project.name}}</p>
-            </div>
-            <div class="flex items-center gap-2 w-full">
-                <div *ngFor="let ressource of project.ressources" (click)="selectProjectRessource(ressource)" [ngClass]="{'badge-primary' : selectedProjectRessource[0] == ressource}" class="badge items-center space-x-1 cursor-pointer">
-                    <p>{{ ressource.skill_name }}</p>
-                    <!-- <span class="opacity-50 text-xs">{{ ressource.time / 3600 }}h</span> -->
-                    <span class="opacity-50 text-xs">{{ getRemainingTime(ressource) / 3600 }}h</span>
-                </div>
-            </div>
+      <!-- Project List -->
+      <div class="flex flex-col space-y-2" *ngFor="let project of projects">
+        <div class="flex items-center space-x-2">
+          <div class="tooltip tooltip-right"
+               [attr.data-tip]="project.project.lock ? 'Project locked. Won’t be processed' : 'Project unlocked. Will be processed'">
+            <i (click)="swapProjectLock(!project.project.lock, project.project.id.toString())"
+               [ngClass]="{ 'fa-lock': project.project.lock, 'fa-lock-open': !project.project.lock }"
+               class="cursor-pointer text-xs fa-solid"></i>
+          </div>
+          <!-- Project Name with Colored Bullet -->
+          <p class="text-xl font-semibold">{{ project.project.name }}</p>
+          <span class="w-4 h-4 rounded-full" [style.background-color]="generateProjectColor(project.project.id)"></span>
         </div>
+
+        <!-- Skill Badges -->
+        <div class="flex items-center gap-2 w-full">
+          <div *ngFor="let ressource of project.ressources" (click)="selectProjectRessource(ressource)"
+               [ngClass]="{'badge-success': getRemainingTime(ressource) / 3600 == 0, 'badge-primary': selectedProjectRessource[0] == ressource}"
+               class="badge items-center space-x-1 cursor-pointer">
+            <p>{{ ressource.skill_name }}</p>
+            <span class="opacity-50 text-xs">{{ getRemainingTime(ressource) / 3600 }}h</span>
+          </div>
+        </div>
+      </div>
+
+
+
     </div>
 
 

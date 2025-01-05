@@ -1,15 +1,15 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { AlertService } from '../../services/alert.service';
-import { ApiService } from '../../services/api.service';
-import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { BusinessClosure } from '../../modules/business-closure/business-closure.module';
-import { Project } from '../../modules/project/project.module';
-import { DndModule, DndDropEvent, EffectAllowed } from 'ngx-drag-drop';
-import { User } from '../../modules/user/user.module';
-import { ProjectRessource } from '../../modules/project-ressource/project-ressource.module';
+import {Component} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {AlertService} from '../../services/alert.service';
+import {ApiService} from '../../services/api.service';
+import {HttpClientModule} from '@angular/common/http';
+import {FormsModule} from '@angular/forms';
+import {RouterLink} from '@angular/router';
+import {BusinessClosure} from '../../modules/business-closure/business-closure.module';
+import {Project} from '../../modules/project/project.module';
+import {DndModule} from 'ngx-drag-drop';
+import {User} from '../../modules/user/user.module';
+import {ProjectRessource} from '../../modules/project-ressource/project-ressource.module';
 
 @Component({
   selector: 'app-planer',
@@ -24,6 +24,8 @@ export class PlanerComponent {
 
   business_hours: string = '';
   wiggle_room: string = '';
+
+  projectColors: { [key: string]: string } = {};
 
   businessclosures: BusinessClosure[] = [];
   businessclosures_types: string[] = [];
@@ -225,6 +227,34 @@ export class PlanerComponent {
     }
   }
 
+  generateProjectColor(projectId: number): string {
+    if (!this.projectColors[projectId]) {
+      // Generate light pastel-like colors
+      const hue = (projectId * 137) % 360; // Unique hue based on project ID
+      const saturation = 50; // Keep saturation low for a softer color
+      const lightness = 85;  // High lightness for a more white-ish appearance
+      this.projectColors[projectId] = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    }
+
+    return this.projectColors[projectId];
+  }
+
+
+  getCellColor(colId: string): string {
+    const allocatedResource = this.allocatedRessources.find(res => res.colId === colId);
+    if (allocatedResource) {
+      return this.generateProjectColor(allocatedResource.ressources.project_id);
+    }
+    return 'transparent'; // Default background
+  }
+
+// Get the skill name for the cell
+  getSkillName(colId: string): string {
+    const allocatedResource = this.allocatedRessources.find(res => res.colId === colId);
+    return allocatedResource ? allocatedResource.ressources.skill_name : '';
+  }
+
+
   isToday(date: Date): boolean {
     var todaysDate = new Date();
     if (date.setHours(0, 0, 0, 0) == todaysDate.setHours(0, 0, 0, 0)) {
@@ -378,19 +408,24 @@ export class PlanerComponent {
   }
 
   onMouseDown(id: string) {
-    // console.log('fill ' + id+ ' with ' + this.selectedProjectRessource[0].skill_name + ' from ' + this.selectedProjectRessource[0].project_name);
-    if (this.selectedProjectRessource[0] == undefined) {
-      return;
+    if (!this.selectedProjectRessource[0]) {
+      return; // No resource selected
     }
-    for (let i = 0; i < this.allocatedRessources.length; i++)  {
-      if (this.allocatedRessources[i].colId === id) {
-        this.allocatedRessources[i] = {colId: id, ressources: this.selectedProjectRessource[0]};
-        console.log(this.allocatedRessources)
-        return;
-      }
+
+    // Check if the resource is already assigned
+    const existingResourceIndex = this.allocatedRessources.findIndex(res => res.colId === id);
+
+    if (existingResourceIndex !== -1) {
+      // If the resource is already assigned, remove it
+      this.allocatedRessources.splice(existingResourceIndex, 1);
+      console.log(`Resource removed from ${id}`);
+    } else {
+      // If not assigned, add it
+      this.allocatedRessources.push({ colId: id, ressources: this.selectedProjectRessource[0] });
+      console.log(`Resource assigned to ${id}`);
     }
-    this.allocatedRessources.push({colId: id, ressources: this.selectedProjectRessource[0]});
-    console.log(this.allocatedRessources)
+
+    console.log(this.allocatedRessources);
   }
 
   getUsers() {
